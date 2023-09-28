@@ -324,3 +324,61 @@ SELECT /*выбор*/
 FROM sql.pokemon /*из таблицы sql.pokemon*/
 GROUP BY 1, 2 /*группировка по столбцам 1 и 2*/
 ORDER BY 1, 2 NULLS FIRST /*сортировка по столбцам 1 и 2; сначала нули*/
+
+/*4. 5. Фильтрация агрегированных строк*/
+
+SELECT /*выбор*/
+    type1 AS primary_type, /*таблица type1; присвоить алиас primary_type*/
+    AVG(attack) AS avg_attack /*расчёт среднего по столбцу attack; присвоить алиас avg_attack*/
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+GROUP BY primary_type /*группировать по столбцу primary_type*/
+HAVING AVG(attack) > 90 /*фильтровать по среднему значению attack, превышающему 90*/
+
+/*Задание 5.1*/
+SELECT /*выбор*/
+    type1 AS primary_type, /*таблица type1; присвоить алиас primary_type*/
+    type2 AS additional_type
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+GROUP BY primary_type, additional_type /*группировать по столбцу primary_type*/
+HAVING AVG(attack) > 100 AND MAX(hp) < 80/*фильтровать по среднему значению attack, превышающему 90*/
+
+/*Задание 5.2*/
+SELECT /*выбор*/
+    type1 AS primary_type, /*таблица type1; присвоить алиас primary_type*/
+    COUNT(type1) AS pokemon_count
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+WHERE name LIKE 'S%'
+GROUP BY primary_type /*группировать по столбцу primary_type*/
+HAVING AVG(defense) > 80 /*фильтровать по среднему значению attack, превышающему 90*/
+ORDER BY pokemon_count DESC
+LIMIT 3
+
+/*6. Итоги*/
+--Задание 6.1 Сколько различных значений показателей атаки есть у покемонов с типом Water (основным или дополнительным)?
+SELECT /*выбор*/
+    COUNT(DISTINCT attack)
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+WHERE type2 = 'Water' OR type1 = 'Water'
+
+--Задание 6.2 
+SELECT /*выбор*/
+    type1 AS primary_type, 
+    type2 AS additional_type,
+    AVG(hp) avg_hp,
+    AVG(attack) avg_attack,
+    AVG(defense) avg_defense,
+    AVG(speed) avg_speed
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+GROUP BY primary_type, additional_type
+HAVING AVG(hp)+AVG(attack)+AVG(defense)+AVG(speed) > 400
+
+--Задание 6.3 
+SELECT /*выбор*/
+    type1,
+    COUNT(type1)
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+WHERE attack BETWEEN 50 AND 100 OR defense BETWEEN 50 AND 100
+GROUP BY type1
+HAVING MAX(hp) <= 125
+ORDER BY COUNT(type1) DESC
+OFFSET 4 LIMIT 1
