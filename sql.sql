@@ -231,6 +231,7 @@ ORDER BY rating DESC
 LIMIT 7
 /*___________________________________________________SQL-2. Агрегатные функции_______________________________________________-*/
 /*1. Знакомимся с данными*/
+
 SELECT */*выбор*/
 FROM sql.pokemon /*из таблицы sql.kinopoisk*/
 
@@ -247,6 +248,7 @@ SELECT DISTINCT /*выбрать уникальные значения*/
     type1, /*столбец type1*/
     type2 /*столбец type2*/
 FROM sql.pokemon /*из таблицы sql.pokemon*/
+
 
 /*3. Агрегатные функции*/
 SELECT
@@ -289,3 +291,36 @@ SELECT /*выбор*/
     MIN(hp) AS "min_hp"
 FROM sql.pokemon /*из таблицы sql.pokemon*/
 WHERE type1 = 'Electric' AND type2 IS NOT NULL AND defense > 50 /*при условии, что значение столбца type1 содержит grass*/
+
+/*4. Группировка*/
+SELECT /*выбор*/
+    type1 AS pokemon_type, /*столбец type1; присвоить алиас pokemon_type*/
+    COUNT(*) AS pokemon_count /*подсчёт всех строк; присвоить алиас pokemon_count*/
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+GROUP BY type1 /*группировка по столбцу type1*/
+ORDER BY type1 /*сортировка по столбцу type1*/
+
+SELECT /*выбор*/
+    type1 AS pokemon_type, /*столбец type1; присвоить алиас pokemon_type*/
+    COUNT(*) AS pokemon_count /*подсчёт всех строк; присвоить алиас pokemon_count*/
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+GROUP BY pokemon_type /*группировка по столбцу pokemon_type*/
+ORDER BY COUNT(*) DESC /*сортировка в порядке убывания*/
+
+/*Задание 4.1*/
+SELECT 
+    type1 AS primary_type,
+    COUNT(DISTINCT type2) AS additional_types_count,
+    AVG(hp) AS avg_hp,
+    SUM(attack) AS attack_sum
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+GROUP BY type1/*группировка по столбцу pokemon_type*/
+ORDER BY additional_types_count DESC, primary_type  /*сортировка в порядке убывания*/
+
+SELECT /*выбор*/
+    type1 AS primary_type, /*столбец type1; присвоить алиас primary_type*/
+    type2 AS additional_type, /*столбец type2; присвоить алиас additional_type*/
+    COUNT(*) AS pokemon_count /*подсчёт всех строк присвоить алиас pokemon_count*/
+FROM sql.pokemon /*из таблицы sql.pokemon*/
+GROUP BY 1, 2 /*группировка по столбцам 1 и 2*/
+ORDER BY 1, 2 NULLS FIRST /*сортировка по столбцам 1 и 2; сначала нули*/
