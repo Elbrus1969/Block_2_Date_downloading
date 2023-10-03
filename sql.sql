@@ -382,3 +382,94 @@ GROUP BY type1
 HAVING MAX(hp) <= 125
 ORDER BY COUNT(type1) DESC
 OFFSET 4 LIMIT 1
+
+--SQL-3. Соединение таблиц
+--1. Знакомимся с данными
+--Задание 1.2
+SELECT /*выбор всех столбцов*/
+  season,
+  SUM(home_team_goals) total_home_goals,
+  SUM(away_team_goals) total_away_goals
+FROM sql.matches /*из таблицы sql.kinopoisk*/
+--WHERE short_name = 'VAL' /*год 1999*/
+GROUP BY season
+--HAVING COUNT(short_name) = 'VAL'
+ORDER BY season
+
+--2. Соединение таблиц по ключу
+--ОБЪЕДИНЯЕМ ТАБЛИЦЫ БЕЗ ОПЕРАТОРОВ
+SELECT
+    COUNT(api_id) /*выбор всех полей*/
+FROM
+    sql.teams, /*таблица с командами*/
+    sql.matches /*таблица с матчами*/
+
+SELECT * /*выбор всех полей в таблице*/
+FROM
+    sql.teams, /*таблица с командами*/
+    sql.matches /*таблица с матчами*/
+WHERE home_team_api_id = api_id /*условие: home_team_api_id таблицы matches равен api_id таблицы teams*/
+
+SELECT * /*выбор всех полей в таблицы*/
+FROM
+    sql.teams, /*таблица с командами*/
+    sql.matches /*таблица с матчами*/
+WHERE away_team_api_id = api_id /*условие: away_team_api_id таблицы matches равен api_id таблицы teams*/
+
+SELECT 
+    long_name, /*столбец long_name таблицы teams*/
+    home_team_goals, /*столбец home_team_goals таблицы matches*/
+    away_team_goals /*столбец away_team_goals таблицы matches*/
+FROM
+    sql.teams, /*таблица с командами*/
+    sql.matches /*таблица с матчами*/
+WHERE home_team_api_id = api_id /*условие: home_team_api_id таблицы matches равен api_id таблицы teams*/
+
+--Задание 2.2 
+SELECT 
+    long_name, /*столбец long_name таблицы teams*/
+    home_team_goals, /*столбец home_team_goals таблицы matches*/
+    away_team_goals /*столбец away_team_goals таблицы matches*/
+FROM
+    sql.teams, /*таблица с командами*/
+    sql.matches /*таблица с матчами*/
+WHERE away_team_api_id = api_id /*условие: home_team_api_id таблицы matches равен api_id таблицы teams*/
+
+--3. Знакомимся с JOIN
+SELECT 
+    long_name, /*столбец long_name таблицы teams*/
+    home_team_goals, /*столбец home_team_goals таблицы matches*/
+    away_team_goals /*столбец away_team_goals таблицы matches*/
+FROM    
+    sql.teams /*таблица с командами*/
+JOIN sql.matches on home_team_api_id = api_id /*оператор соединения таблиц; таблица matches; условие: home_team_api_id таблицы matches равен api_id таблицы teams*/
+
+--Задание 3.2
+SELECT 
+    matches.id match_id, /*столбец long_name таблицы teams*/
+    teams.id team_id/*столбец home_team_goals таблицы matches*/
+FROM    
+    sql.teams /*таблица с командами*/
+JOIN sql.matches on home_team_api_id = api_id
+ORDER BY match_id
+
+SELECT
+    h.long_name "домашняя команда",
+    m.home_team_goals "голы домашней команды",
+    m.away_team_goals "голы гостевой команды",
+    a.long_name "гостевая команда" 
+FROM
+    sql.matches m
+    JOIN sql.teams h ON m.home_team_api_id = h.api_id
+    JOIN sql.teams a ON m.away_team_api_id = a.api_id
+
+--Задание 3.3 
+SELECT 
+    m.id id, /*столбец long_name таблицы teams*/
+    h.short_name home_short,/*столбец home_team_goals таблицы matches*/
+    a.short_name away_short
+FROM    
+    sql.matches m/*таблица с командами*/
+    JOIN sql.teams h ON m.home_team_api_id = h.api_id
+    JOIN sql.teams a ON m.away_team_api_id = a.api_id
+ORDER BY id
